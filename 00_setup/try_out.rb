@@ -5,34 +5,4 @@ class TryOut
   # first_name=メソッドを持つ。これは、引数の内容でファーストネームを書き換える。
   # upcase_full_nameメソッドを持つ。これは、full_nameメソッドの結果をすべて大文字で返す。このメソッドは副作用を持たない。
   # upcase_full_name! メソッドを持つ。これは、upcase_full_nameの副作用を持つバージョンで、ファーストネーム、ミドルネーム、ラストネームをすべて大文字に変え、オブジェクトはその状態を記憶する
-
-  def initialize(first, middle='', last)
-    @first_name = first
-    @middle_name = middle
-    @last_name = last
-  end
-
-  def full_name
-    full_name_array.join(' ')
-  end
-
-  def first_name=(value)
-    @first_name = value
-  end
-
-  def upcase_full_name
-    full_name.upcase
-  end
-
-  def upcase_full_name!
-    full_name_array.map(&:upcase!).join(' ')
-  end
-
-  private
-
-  def full_name_array
-    [@first_name, @middle_name, @last_name].compact.reject(&:empty?)
-  end
-
-
 end
