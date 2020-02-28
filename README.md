@@ -30,5 +30,5 @@
 # テストの実行
 手元でやるとき
 ```
-ruby -Itest test/00_setup/test_try_out.rb
+bundle exec ruby -Itest test/00_setup/test_try_out.rb
 ```
