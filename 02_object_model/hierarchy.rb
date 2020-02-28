@@ -42,7 +42,7 @@ end
 # - C2.ancestors.first(2) が [M1, C2] となる
 # - C2.new.name が 'M1' を返す
 class C2
-  include M1
+  prepend M1
   def name
     super
   end
@@ -59,8 +59,8 @@ end
 
 class C3 < MySuperClass
   prepend M1
-  include M2
   include M3
+  include M2
 
   def name
     'C3'
@@ -78,6 +78,14 @@ end
 #   c4.increment # => "3"
 # - 定義済みのメソッド (value, value=) は private のままとなっている
 class C4
+  def initialize
+    @value = 0
+  end
+
+  def increment
+    self.value = value + 1
+    @value.to_s
+  end
   private
 
   attr_accessor :value
@@ -90,6 +98,11 @@ end
 # - C5.new.another_name が文字列 "M1" を返す
 # - C5.new.other_name が文字列 "Refined M1" を返す
 module M1Refinements
+  refine M1 do
+    def name
+      'Refined M1'
+    end
+  end
 end
 
 class C5
@@ -114,4 +127,8 @@ end
 class C6
   include M1
   using M1Refinements
+
+  def name
+    super
+  end
 end
