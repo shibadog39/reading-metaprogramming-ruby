@@ -90,11 +90,20 @@ class TryOver3::A4
     @runners = const_symbols
   end
 
-  def const_missing(const_name)
-    const_name = Class.new do
-      def self.run
-        "run #{const_name}"
-      end
+  def self.const_missing(const_name)
+    super unless @runners.include?(const_name)
+
+    Class.new do
+      # だめ
+      # def self.run
+      #   "run #{const_name}"
+      # end
+
+      # だめ
+      # define_method(:run) { "run #{const_name}" }
+
+      # いけた
+      define_singleton_method(:run) { "run #{const_name}" }
     end
   end
 end
