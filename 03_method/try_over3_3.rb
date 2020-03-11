@@ -6,6 +6,20 @@ TryOver3 = Module.new
 # - `test_` メソッドがこのクラスに実装されていなくても `test_` から始まるメッセージに応答することができる
 # - TryOver3::A1 には `test_` から始まるインスタンスメソッドが定義されていない
 
+class TryOver3::A1
+  def run_test
+    nil
+  end
+
+  def method_missing(method_name, *args)
+    if method_name.to_s.start_with?('test_')
+      run_test
+    else
+      super
+    end
+  end
+end
+
 
 # Q2
 # 以下要件を満たす TryOver3::A2Proxy クラスを作成してください。
@@ -16,6 +30,26 @@ class TryOver3::A2
     instance_variable_set("@#{name}", value)
     self.class.attr_accessor name.to_sym unless respond_to? name.to_sym
   end
+end
+
+class TryOver3::A2Proxy
+  def initialize(a2_source)
+    @source = a2_source
+  end
+
+  def method_missing(method_name, *args, &block)
+    super unless source.respond_to?(method_name)
+
+    source.send(method_name, *args, &block)
+  end
+
+  def respond_to_missing?(method_name, include_private = false)
+    source.respond_to?(method_name) || super
+  end
+
+  private
+
+  attr_reader :source
 end
 
 
@@ -31,10 +65,12 @@ module TryOver3::OriginalAccessor2
       end
 
       define_method "#{attr_sym}=" do |value|
-        if [true, false].include?(value) && !respond_to?("#{attr_sym}?")
+        if [true, false].include?(value)
           self.class.define_method "#{attr_sym}?" do
             @attr == true
           end
+        elsif respond_to?("#{attr_sym}?")
+          self.class.remove_method "#{attr_sym}?"
         end
         @attr = value
       end
@@ -48,6 +84,20 @@ end
 # TryOver3::A4.runners = [:Hoge]
 # TryOver3::A4::Hoge.run
 # # => "run Hoge"
+
+class TryOver3::A4
+  def self.runners=(const_symbols)
+    @runners = const_symbols
+  end
+
+  def const_missing(const_name)
+    const_name = Class.new do
+      def self.run
+        "run #{const_name}"
+      end
+    end
+  end
+end
 
 
 # Q5. チャレンジ問題！ 挑戦する方はテストの skip を外して挑戦してみてください。
