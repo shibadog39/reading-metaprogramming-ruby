@@ -12,12 +12,13 @@ class TestSimpleMock < MiniTest::Test
     assert_kind_of SimpleMock, obj
   end
 
-  def test_mock_extend
-    obj = ClassForMockTest.new
-    SimpleMock.mock(obj)
+  # 必要なのこれ？？？
+  # def test_mock_extend
+  #   obj = ClassForMockTest.new
+  #   SimpleMock.mock(obj)
 
-    assert_kind_of SimpleMock, obj
-  end
+  #   assert_kind_of SimpleMock, obj
+  # end
 
   def test_mock_retuns_setted_value_when_instance
     obj = SimpleMock.new

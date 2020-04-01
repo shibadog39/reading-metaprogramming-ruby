@@ -37,3 +37,40 @@
 # obj.imitated_method
 # obj.called_times(:imitated_method) #=> 2
 # ```
+
+module Mockable
+  def expects(method_sym, value)
+    @expexted_values ||= {}
+    @expexted_values[method_sym] = value
+
+    define_singleton_method(method_sym) do
+      @called_times[method_sym] += 1 if @called_times&.has_key?(method_sym)
+      value
+    end
+  end
+
+  def watch(method_sym)
+    @called_times ||= {}
+    @called_times[method_sym] = 0
+
+    define_singleton_method(method_sym) do
+      @called_times[method_sym] += 1 if @called_times&.has_key?(method_sym)
+      @expexted_values&.[](method_sym)
+    end
+  end
+
+  def called_times(method_sym)
+    @called_times[method_sym]
+  end
+end
+
+class SimpleMock
+  include Mockable
+
+  class << self
+    def mock(obj)
+      obj.extend Mockable
+      obj
+    end
+  end
+end
