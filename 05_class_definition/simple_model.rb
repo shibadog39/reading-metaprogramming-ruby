@@ -20,6 +20,7 @@ module SimpleModel
   end
 
   def initialize(attr_hash)
+    @initial_attr = attr_hash
     @changed_attrs = attr_hash.map do |key,value|
       # attr_writerの代用
       instance_variable_set("@#{key}", value)
@@ -30,6 +31,10 @@ module SimpleModel
 
   def changed?
     @changed_attrs.values.any?
+  end
+
+  def restore!
+    initialize(@initial_attr)
   end
 
   module ClassMethods
