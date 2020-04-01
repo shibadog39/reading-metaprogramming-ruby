@@ -38,7 +38,8 @@ module SimpleModel
   end
 
   module ClassMethods
-    def attr_writer(*attrs)
+    def attr_accessor(*attrs)
+      attr_reader *attrs
       attrs.each do |attr|
         define_method("#{attr}=") do |value|
           instance_variable_set("@#{attr}", value)
